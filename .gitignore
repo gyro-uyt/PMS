@@ -5,6 +5,7 @@
 *.obj
 *.log
 
+
 # Backup and temporary files
 *~
 *.swp
@@ -20,10 +21,18 @@
 Thumbs.db
 
 # Your encrypted data (optional)
-data/*.txt
+# data/*.txt
 data/*.dat
 data/*.enc
 
 # Notes if private
-notes/*.md
-notes/*.txt
+# notes/*.md
+# notes/*.txt
+
+# Ignore all files without an extension
+.*
+
+# Allow hidden necessary files
+!.gitignore
+!.github/
+
