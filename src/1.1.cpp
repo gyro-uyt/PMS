@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <string>
+#include <vector>
 using namespace std;
 namespace fs = std::filesystem;
 
@@ -24,6 +26,7 @@ public:
     void storeCredential();
     void run();
     int menu();
+    int chooseProfile();
 };
 void PMS::welcomeMsg()
 {
@@ -41,7 +44,7 @@ int PMS::storeProfile()
 {
     // Storing only the profile names everytime they are created
     ofstream StoreAllProfiles("../data/AllProfileData.txt", ios::app);
-    StoreAllProfiles << profile_name <<endl;
+    StoreAllProfiles << profile_name << endl;
     StoreAllProfiles.close();
 
     // Define path to data folder (relative to where the program runs)
@@ -90,13 +93,13 @@ void PMS::storeCredential()
 }
 void PMS::run()
 {
-    welcomeMsg();
     menu();
     // setCredential();
     // storeCredential();
 }
 int PMS::menu()
 {
+    welcomeMsg();
     cout << "\nChoose the operation to be followed:\n";
     cout << "1. View a Stored profile\n";
     cout << "2. Create a New profile\n";
@@ -106,10 +109,9 @@ int PMS::menu()
     switch (menu_choice)
     {
     case 1:
-        cout<<"Choose one of the following profiles:\n";
-        cin>>choose_profile;
-
+        chooseProfile();
         break;
+
     case 2:
         cout << "\nCreating a new Profile:\n";
         setProfile();
@@ -147,11 +149,46 @@ int PMS::menu()
     }
     return 0;
 }
+int PMS::chooseProfile()
+{
+    ifstream openProfileFile("../data/AllProfileData.txt");
+    vector<string> allProfileNames;
+    string names;
+    cin.ignore();
+    while (getline(openProfileFile, names)) // reads one line at a time from the 'openProfileFile' and puts it in the 'names' variable
+    {
+        allProfileNames.push_back(names); // each time loop is ran 'names' stores all lines, and we push those into 'allProfileNames' vector
+    }
+    // Now, we have successfully read the 'StoredProfiles.txt' file and stored all of it's name into a vector
+
+    // Now, we make menu to choose profile from this vector
+    cout << "\nChoose one of the stored Profile: " << endl;
+    for (int i = 0; i < allProfileNames.size(); i++)
+    {
+        cout << (i + 1) << ". " << allProfileNames[i] << endl;
+    }
+    cin >> choose_profile;
+    cin.ignore();
+
+    // Now, Open the file and show data
+    string selectedProfile = allProfileNames[choose_profile - 1];               // this is the file choosed by the user
+    string selectedProfileFileName = "../data/1.1." + selectedProfile + ".txt"; // this is it's address
+
+    // displaying the content
+    ifstream profileFile(selectedProfileFileName);
+    string displayLines;
+    cout << "\nDisplaying the content stored in the choosed profile\n";
+    while (getline(profileFile, displayLines))
+    {
+        cout << displayLines << endl;
+    }
+    return 0;
+}
 
 int main()
 {
     PMS alpha;
-    alpha.run();
+    alpha.menu();
 
     return 0;
 }
