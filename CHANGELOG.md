@@ -3,7 +3,7 @@
 
 ## [v1.2] - 2025-04-04
 
-### Added-1
+### Added-3
 
 - Feature to view all stored profiles.  
 - Master password authentication before showing credentials.  
@@ -20,7 +20,7 @@
 
 ## [v1.0] - 2025-04-02  
 
-### Added-3
+### Added-1
 
 - Basic CLI interface for welcome message and main menu.  
 - Creating new profiles with name and master-password.  
