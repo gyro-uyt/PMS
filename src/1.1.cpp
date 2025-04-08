@@ -13,6 +13,7 @@ private:
     string cr_description;
     string cr_password;
     string profile_name;
+    string profile_name_path; // this is same as profile_name, i used this to create the .txt file, whose name is given by user
     string master_password;
     int menu_choice;
     int profile_choice; // menu choice, Change name
@@ -37,6 +38,7 @@ void PMS::setProfile()
     cout << "Set the Profile nickname (without any white spaces): ";
     cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears any leftover newline
     getline(cin, profile_name);
+    profile_name_path = profile_name;
     cout << "Set the master-password: ";
     getline(cin, master_password);
 }
@@ -59,9 +61,9 @@ int PMS::storeProfile()
             return 1;
         }
     }
-    profile_name = folderPath + "/1.1." + profile_name + ".txt";
+    profile_name_path = folderPath + "/1.1." + profile_name_path + ".txt";
 
-    ofstream storeProfileData(profile_name, ios::app); // Note: using new Constructor method
+    ofstream storeProfileData(profile_name_path, ios::app); // Note: using new Constructor method
     storeProfileData << profile_name;
     storeProfileData << endl;
     storeProfileData << master_password;
@@ -81,7 +83,7 @@ void PMS::setCredential()
 }
 void PMS::storeCredential()
 {
-    ofstream storeCredentialDAta(profile_name, ios::app);
+    ofstream storeCredentialDAta(profile_name_path, ios::app);
     storeCredentialDAta << cr_username;
     storeCredentialDAta << endl;
     storeCredentialDAta << cr_password;
@@ -170,9 +172,37 @@ int PMS::chooseProfile()
     cin >> choose_profile;
     cin.ignore();
 
-    // Now, Open the file and show data
+    // Now, Open the selected file and show data
     string selectedProfile = allProfileNames[choose_profile - 1];               // this is the file choosed by the user
     string selectedProfileFileName = "../data/1.1." + selectedProfile + ".txt"; // this is it's address
+
+    // retrive the master-password
+    ifstream retriveMasterPassword(selectedProfileFileName);
+    int master_password_line = 2;
+    int current_line = 1;
+    while (getline(retriveMasterPassword, master_password))
+    {
+        if (current_line == master_password_line)
+        {
+            break;
+        }
+        current_line++;
+    }
+    retriveMasterPassword.close();
+
+    // cross-verifying master password
+    string check_master_password;
+    cout << "\nEnter the Master password for the choosen profile: ";
+    cin >> check_master_password;
+    if (check_master_password == master_password)
+    {
+        cout << "Authentication Verified!" << endl;
+    }
+    else
+    {
+        cout << "User Authentication Failed!" << endl;
+        return 0;
+    }
 
     // displaying the content
     ifstream profileFile(selectedProfileFileName);
