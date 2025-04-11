@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <filesystem>
+#include <filesystem>   // used to interact with the file system — like folders, files, paths, etc.
 #include <string>
 #include <vector>
 using namespace std;

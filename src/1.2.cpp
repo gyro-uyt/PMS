@@ -13,7 +13,7 @@ private:
     string cr_description;
     string cr_password;
     string profile_name;
-    string profile_name_path; // this is same as profile_name, i used this to create the .txt file, whose name is given by user
+    string profile_name_path;
     string master_password;
     int menu_choice;
     int profile_choice; // menu choice, Change name
@@ -21,7 +21,7 @@ private:
 
 public:
     void welcomeMsg();
-    void setProfile(); // stores Profile name, Master-password
+    void setProfile();
     int storeProfile();
     void setCredential();
     void storeCredential();
@@ -36,7 +36,7 @@ void PMS::welcomeMsg()
 void PMS::setProfile()
 {
     cout << "Set the Profile nickname (without any white spaces): ";
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clears any leftover newline
+    cin.ignore();
     getline(cin, profile_name);
     profile_name_path = profile_name;
     cout << "Set the master-password: ";
@@ -53,15 +53,15 @@ int PMS::storeProfile()
     string folderPath = "../data";
 
     // Check if "data" folder exists, if not create it
-    if (!fs::exists(folderPath)) //  checks whether the folder already exists
+    if (!fs::exists(folderPath))
     {
-        if (!fs::create_directory(folderPath)) // tries to create the folder (only runs if it doesn’t already exist)
+        if (!fs::create_directory(folderPath))
         {
             cerr << "Failed to create folder: " << folderPath << endl;
             return 1;
         }
     }
-    profile_name_path = folderPath + "/1.1." + profile_name_path + ".txt";
+    profile_name_path = folderPath + "/1.2." + profile_name_path + ".txt";
 
     ofstream storeProfileData(profile_name_path, ios::app); // Note: using new Constructor method
     storeProfileData << profile_name;
@@ -157,11 +157,10 @@ int PMS::chooseProfile()
     vector<string> allProfileNames;
     string names;
     cin.ignore();
-    while (getline(openProfileFile, names)) // reads one line at a time from the 'openProfileFile' and puts it in the 'names' variable
+    while (getline(openProfileFile, names))
     {
-        allProfileNames.push_back(names); // each time loop is ran 'names' stores all lines, and we push those into 'allProfileNames' vector
+        allProfileNames.push_back(names);
     }
-    // Now, we have successfully read the 'StoredProfiles.txt' file and stored all of it's name into a vector
 
     // Now, we make menu to choose profile from this vector
     cout << "\nChoose one of the stored Profile: " << endl;
@@ -174,7 +173,7 @@ int PMS::chooseProfile()
 
     // Now, Open the selected file and show data
     string selectedProfile = allProfileNames[choose_profile - 1];               // this is the file choosed by the user
-    string selectedProfileFileName = "../data/1.1." + selectedProfile + ".txt"; // this is it's address
+    string selectedProfileFileName = "../data/1.2." + selectedProfile + ".txt"; // this is it's address
 
     // retrive the master-password
     ifstream retriveMasterPassword(selectedProfileFileName);
