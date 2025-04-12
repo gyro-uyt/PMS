@@ -1,3 +1,4 @@
+// aim to add XOR-encryption
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -15,6 +16,7 @@ private:
     string profile_name;
     string profile_name_path;
     string master_password;
+    string key; // this is the key which encrypts your data
     int menu_choice;
     int profile_choice; // menu choice, Change name
     int choose_profile;
@@ -24,11 +26,13 @@ public:
     void setProfile();
     int storeProfile();
     void setCredential();
-    void storeCredential();
+    void storeCredential(); // encrypt the credentials before exiting 
     void run();
     int menu();
-    int chooseProfile();
+    int chooseProfile();    // decrypt it before showing
+    void cipherProfileData();
 };
+
 void PMS::welcomeMsg()
 {
     cout << "\n! Welcome to the PASSWORD MANAGEMENT SYSTEM !" << endl;
@@ -41,6 +45,9 @@ void PMS::setProfile()
     profile_name_path = profile_name;
     cout << "Set the master-password: ";
     getline(cin, master_password);
+    // setting-up key
+    cout<<"\n(Be carefull this will be used to encrypt your data, be sure to remember it, it should be without spaces)\nEnter the Key: ";
+    cin>>key;
 }
 int PMS::storeProfile()
 {
@@ -133,6 +140,7 @@ int PMS::menu()
                 cout << "\nStored entered credential successfully\n";
                 break;
             case 2:
+                cipherProfileData();
                 return 0;
                 break;
             default:
@@ -152,6 +160,7 @@ int PMS::menu()
     return 0;
 }
 int PMS::chooseProfile()
+
 {
     ifstream openProfileFile("../data/AllProfileData.txt");
     vector<string> allProfileNames;
@@ -175,35 +184,39 @@ int PMS::chooseProfile()
     string selectedProfile = allProfileNames[choose_profile - 1];               // this is the file choosed by the user
     string selectedProfileFileName = "../data/1.2." + selectedProfile + ".txt"; // this is it's address
 
-    // retrive the master-password
-    ifstream retriveMasterPassword(selectedProfileFileName);
-    int master_password_line = 2;
-    int current_line = 1;
-    while (getline(retriveMasterPassword, master_password))
-    {
-        if (current_line == master_password_line)
-        {
-            break;
-        }
-        current_line++;
-    }
-    retriveMasterPassword.close();
+    // // retrive the master-password
+    // ifstream retriveMasterPassword(selectedProfileFileName);
+    // int master_password_line = 2;
+    // int current_line = 1;
+    // while (getline(retriveMasterPassword, master_password))
+    // {
+    //     if (current_line == master_password_line)
+    //     {
+    //         break;
+    //     }
+    //     current_line++;
+    // }
+    // retriveMasterPassword.close();
 
-    // cross-verifying master password
-    string check_master_password;
-    cout << "\nEnter the Master password for the choosen profile: ";
-    cin >> check_master_password;
-    if (check_master_password == master_password)
-    {
-        cout << "Authentication Verified!" << endl;
-    }
-    else
-    {
-        cout << "User Authentication Failed!" << endl;
-        return 0;
-    }
+    // // cross-verifying master password
+    // string check_master_password;
+    // cout << "\nEnter the Master password for the choosen profile: ";
+    // cin >> check_master_password;
+    // if (check_master_password == master_password)
+    // {
+    //     cout << "Authentication Verified!" << endl;
+    // }
+    // else
+    // {
+    //     cout << "User Authentication Failed!" << endl;
+    //     return 0;
+    // }
 
     // displaying the content
+    profile_name_path= selectedProfileFileName;
+    cout<<"Enter the key"<<endl;
+    getline(cin, key);
+    cipherProfileData();
     ifstream profileFile(selectedProfileFileName);
     string displayLines;
     cout << "\nDisplaying the content stored in the choosed profile\n";
@@ -211,7 +224,30 @@ int PMS::chooseProfile()
     {
         cout << displayLines << endl;
     }
+    cipherProfileData();
     return 0;
+}
+void PMS::cipherProfileData()
+{
+    // copy the content of the file
+    string line, content;
+    ifstream read(profile_name_path);
+    while (getline(read, line))
+    {
+        content += line + "\n";
+    }
+    read.close();
+
+    // encrypt/decrypt
+    for (size_t i = 0; i < content.length(); i++)
+    {
+        content[i] = content[i]^key[i%key.length()];
+    }
+    
+    // over-write the file
+    ofstream write(profile_name_path);
+    write << content;
+    write.close();
 }
 
 int main()
