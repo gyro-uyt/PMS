@@ -10,3 +10,5 @@ ed
 grinder
 yokoso
 Abhay
+windows
+qwerty

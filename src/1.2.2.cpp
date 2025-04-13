@@ -178,7 +178,6 @@ int PMS::chooseProfile()
     {
         cout << displayLines << endl;
     }
-    cipherProfileData();
     return 0;
 }
 void PMS::cipherProfileData()
