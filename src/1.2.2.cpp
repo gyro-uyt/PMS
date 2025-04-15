@@ -42,7 +42,6 @@ void PMS::setProfile()
     getline(cin, profile_name);
     profile_name_path = profile_name;
     cout << "\n(Be carefull this will be used to encrypt your data, be sure to remember it)\nEnter the Key: ";
-    cin.ignore();
     getline(cin, key);
 }
 int PMS::storeProfile()
@@ -170,6 +169,7 @@ int PMS::chooseProfile()
     profile_name_path = selectedProfileFileName;
     cout << "\nEnter the key" << endl;
     getline(cin, key);
+    
     cipherProfileData();
     ifstream profileFile(selectedProfileFileName);
     string displayLines;
@@ -178,6 +178,8 @@ int PMS::chooseProfile()
     {
         cout << displayLines << endl;
     }
+    profileFile.close();
+    cipherProfileData();
     return 0;
 }
 void PMS::cipherProfileData()
