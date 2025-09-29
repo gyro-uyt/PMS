@@ -34,4 +34,4 @@ g++ main.cpp -o pms
 ## Future
 
 - Make this into WebD
-
+- Frontend with AI help and backend do urself
